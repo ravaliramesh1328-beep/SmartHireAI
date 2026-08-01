@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SmartHire AI - Video Interview</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        video{
+            width:45%;
+            border:2px solid #0077cc;
+            border-radius:10px;
+            margin:10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Video Interview</h2>
+
+    <video id="localVideo" autoplay muted playsinline></video>
+    <video id="remoteVideo" autoplay playsinline></video>
+
+    <br><br>
+
+    <button onclick="startCamera()">Start Camera</button>
+    <button onclick="endCall()">End Call</button>
+</div>
+
+<script>
+let localStream;
+
+async function startCamera(){
+    try{
+        localStream = await navigator.mediaDevices.getUserMedia({
+            video:true,
+            audio:true
+        });
+
+        document.getElementById("localVideo").srcObject = localStream;
+
+    }catch(err){
+        alert("Camera/Microphone access denied");
+    }
+}
+
+function endCall(){
+    if(localStream){
+        localStream.getTracks().forEach(track=>track.stop());
+    }
+
+    document.getElementById("localVideo").srcObject=null;
+}
+</script>
+
+</body>
+</html>
