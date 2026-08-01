@@ -7,6 +7,8 @@ const jobRoutes = require("./routes/jobs");
 const applicationRoutes = require("./routes/applications");
 const resumeRoutes = require("./routes/resume");
 const screeningRoutes = require("./routes/screening");
+const liveJobsRoutes = require("./routes/livejobs");
+
 console.log("Screening route file:", require.resolve("./routes/screening"));
 console.log("Job routes imported:", jobRoutes);
 
@@ -31,6 +33,7 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/resumes", resumeRoutes);
 app.use("/api/screening", screeningRoutes);
+app.use("/api/livejobs", liveJobsRoutes);
 app.get("/api/test", (req, res) => {
     res.send("API OK");
 });
