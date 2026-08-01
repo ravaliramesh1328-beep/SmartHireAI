@@ -6,32 +6,66 @@
 </head>
 <body>
 
+k<script>
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+    };
+
+    const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+
+    if (result.message === "Login Successful") {
+        alert(result.message);
+        window.location.href = "dashboard.html";
+    } else {
+        alert(result.message);
+    }
+});
+</script>
 <div class="container">
-    <h2>Candidate Dashboard</h2>
 
-    <h3>Welcome to SmartHire AI</h3>
+    <h1>📊 Candidate Dashboard</h1>
+    <p>Welcome to SmartHire AI</p>
 
-    <button onclick="location.href='jobs.html'">View Jobs</button>
+    <button onclick="location.href='jobs.html'">💼 View Jobs</button>
     <br><br>
 
-    <button onclick="location.href='resume.html'">Upload Resume</button>
+    <button onclick="location.href='resume.html'">📄 Upload Resume</button>
     <br><br>
 
-    <button onclick="location.href='screening.html'">AI Screening</button>
+    <button onclick="location.href='screening.html'">🤖 AI Resume Screening</button>
     <br><br>
 
-    <button onclick="location.href='profile.html'">My Profile</button>
+    <button onclick="location.href='profile.html'">👤 My Profile</button>
     <br><br>
 
-<button onclick="location.href='jobs.html'">
-    🌍 Live Jobs
-</button>
-<br><br>
-<button onclick="location.href='company-dashboard.html'">
-    Company Dashboard
-</button>
-<br><br>
-    <button onclick="location.href='index.html'">Logout</button>
+    <button onclick="location.href='my-applications.html'">📋 My Applications</button>
+    <br><br>
+
+    <button onclick="location.href='interview.html'">🎥 Video Interview</button>
+    <br><br>
+
+    <button onclick="location.href='company-dashboard.html'">🏢 Company Dashboard</button>
+    <br><br>
+
+    <button onclick="location.href='jobs.html'">🌍 Live Worldwide Jobs</button>
+    <br><br>
+
+    <button onclick="location.href='index.html'">🚪 Logout</button>
+
+</div>
+
 
 </div>
 
