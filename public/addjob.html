@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Job</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Add New Job</h2>
+
+    <form id="jobForm">
+        <input type="text" id="title" placeholder="Job Title" required><br><br>
+
+        <input type="text" id="company" placeholder="Company Name" required><br><br>
+
+        <input type="text" id="location" placeholder="Location" required><br><br>
+
+        <textarea id="description" placeholder="Job Description" required></textarea><br><br>
+
+        <button type="submit">Post Job</button>
+    </form>
+
+    <br>
+
+    <button onclick="location.href='company.html'">Back</button>
+</div>
+
+<script>
+document.getElementById("jobForm").addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const data = {
+        title: document.getElementById("title").value,
+        company: document.getElementById("company").value,
+        location: document.getElementById("location").value,
+        description: document.getElementById("description").value
+    };
+
+    try {
+
+        const res = await fetch("/api/jobs/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        alert(result.message);
+
+        if(result.message === "Job Posted Successfully"){
+            document.getElementById("jobForm").reset();
+        }
+
+    } catch(err) {
+        alert("Error : " + err.message);
+    }
+
+});
+</script>
+
+</body>
+</html>

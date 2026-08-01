@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <head>
+    <title>SmartHire AI - Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+</head>
+<body>
+    <h2>Candidate Registration</h2>
+
+    <form id="registerForm">
+        <label>Full Name:</label><br>
+        <input type="text" placeholder="Enter Full Name"><br><br>
+
+        <label>Email:</label><br>
+        <input type="email" placeholder="Enter Email"><br><br>
+
+        <label>Password:</label><br>
+        <input type="password" placeholder="Enter Password"><br><br>
+
+        <label>Skills:</label><br>
+        <input type="text" placeholder="Java, Python, React"><br><br>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <br>
+    <a href="login.html">Already have an account? Login</a><br>
+    <a href="index.html">Home</a>
+<script>
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+        name: document.querySelectorAll("input")[0].value,
+        email: document.querySelectorAll("input")[1].value,
+        password: document.querySelectorAll("input")[2].value,
+        skills: document.querySelectorAll("input")[3].value
+    };
+
+    const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    alert(result.message);
+});
+</script>
+</body>
+</html>

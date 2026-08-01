@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SmartHire AI - Login</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Company / Candidate Login</h2>
+
+    <form id="loginForm">
+        <label>Email:</label><br>
+        <input type="email" placeholder="Enter Email"><br><br>
+
+        <label>Password:</label><br>
+        <input type="password" placeholder="Enter Password"><br><br>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <br>
+
+    <a href="register.html">Create New Account</a><br>
+    <a href="index.html">Home</a>
+</div>
+<script>
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+        email: document.querySelectorAll("input")[0].value,
+        password: document.querySelectorAll("input")[1].value
+    };
+
+    const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+
+    if (result.message === "Login Successful") {
+        alert(result.message);
+        window.location.href = "dashboard.html";
+    } else {
+        alert(result.message);
+    }
+});
+</script>
+</body>
+</html>

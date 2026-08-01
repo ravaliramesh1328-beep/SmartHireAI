@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Resume Screening</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>AI Resume Screening</h2>
+
+    <form id="screenForm">
+        <input type="text" id="candidateName" placeholder="Candidate Name" required><br><br>
+
+        <input type="email" id="email" placeholder="Email" required><br><br>
+
+        <input type="text" id="jobTitle" placeholder="Job Title" required><br><br>
+
+        <input type="text" id="resumeSkills"
+               placeholder="Resume Skills (Java, Spring Boot, MySQL)" required><br><br>
+
+        <input type="text" id="requiredSkills"
+               placeholder="Required Skills (Java, React, MySQL)" required><br><br>
+
+        <button type="submit">Analyze Resume</button>
+    </form>
+
+    <hr>
+
+    <div id="result"></div>
+</div>
+
+<script>
+document.getElementById("screenForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+        candidateName: document.getElementById("candidateName").value,
+        email: document.getElementById("email").value,
+        jobTitle: document.getElementById("jobTitle").value,
+        resumeSkills: document.getElementById("resumeSkills").value,
+        requiredSkills: document.getElementById("requiredSkills").value
+    };
+
+    const res = await fetch("/api/screening/analyze", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+
+    document.getElementById("result").innerHTML = `
+        <h3>AI Screening Result</h3>
+        <p><b>Match Score:</b> ${result.matchScore}%</p>
+        <p><b>Matched Skills:</b> ${result.matchedSkills.join(", ")}</p>
+        <p><b>Missing Skills:</b> ${result.missingSkills.join(", ")}</p>
+        <p><b>Recommendation:</b> ${result.result}</p>
+    `;
+});
+</script>
+
+</body>
+</html>

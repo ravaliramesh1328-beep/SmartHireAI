@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Company Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>Company Dashboard</h2>
+<div id="stats" style="display:flex;gap:10px;margin:20px 0;flex-wrap:wrap;">
+
+<div style="border:1px solid #ccc;padding:10px;border-radius:8px;">
+<h3>Total Applications</h3>
+<h2 id="totalApps">0</h2>
+</div>
+
+<div style="border:1px solid #ccc;padding:10px;border-radius:8px;">
+<h3>Accepted</h3>
+<h2 id="acceptedApps">0</h2>
+</div>
+
+<div style="border:1px solid #ccc;padding:10px;border-radius:8px;">
+<h3>Rejected</h3>
+<h2 id="rejectedApps">0</h2>
+</div>
+
+<div style="border:1px solid #ccc;padding:10px;border-radius:8px;">
+<h3>Pending</h3>
+<h2 id="pendingApps">0</h2>
+</div>
+
+</div>
+<input
+    type="text"
+    id="searchBox"
+    placeholder="Search by Name or Email"
+    onkeyup="filterCandidates()"
+    style="width:100%;padding:10px;margin-bottom:15px;border-radius:5px;border:1px solid #ccc;">
+<canvas id="dashboardChart" height="120"></canvas>
+<h3>🏆 Top Candidates</h3>
+<div id="topCandidates"></div>
+    <h3>Applied Candidates</h3>
+
+    <div id="applications">
+        Loading...
+    </div>
+
+    <br>
+
+    <button onclick="location.href='company.html'">
+        Back
+    </button>
+
+</div>
+
+<script>
+
+async function loadApplications() {
+
+    try {
+
+        const res = await fetch("/api/applications");
+
+        if (!res.ok) {
+            throw new Error("Failed to load applications");
+        }
+
+        const applications = await res.json();
+document.getElementById("totalApps").innerText = applications.length;
+
+document.getElementById("acceptedApps").innerText =
+applications.filter(a => a.status === "Accepted").length;
+
+document.getElementById("rejectedApps").innerText =
+applications.filter(a => a.status === "Rejected").length;
+
+document.getElementById("pendingApps").innerText =
+applications.filter(a => !a.status || a.status === "Pending").length;
+
+const ctx = document.getElementById("dashboardChart");
+if (
+    window.dashboardChart &&
+    typeof window.dashboardChart.destroy === "function"
+) {
+    window.dashboardChart.destroy();
+}
+
+window.dashboardChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: ["Accepted", "Rejected", "Pending"],
+        datasets: [{
+            label: "Candidates",
+            data: [
+                applications.filter(a => a.status === "Accepted").length,
+                applications.filter(a => a.status === "Rejected").length,
+                applications.filter(a => !a.status || a.status === "Pending").length
+            ]
+        }]
+    }
+});
+        const div = document.getElementById("applications");
+
+        div.innerHTML = "";
+
+        if (applications.length === 0) {
+
+            div.innerHTML = "<h3>No Applications Found</h3>";
+
+            return;
+
+        }
+
+const topDiv = document.getElementById("topCandidates");
+
+topDiv.innerHTML = "";
+
+applications
+    .slice()
+    .sort((a, b) => {
+        if (a.status === "Accepted" && b.status !== "Accepted") return -1;
+        if (a.status !== "Accepted" && b.status === "Accepted") return 1;
+        return 0;
+    })
+    .slice(0, 5)
+    .forEach((app, index) => {
+        topDiv.innerHTML += `
+            <p><b>${index + 1}.</b> ${app.candidateName} (${app.status})</p>
+        `;
+    });
+        applications.forEach((app, index) => {
+
+            div.innerHTML += `
+<div class="candidate-card" style="border:1px solid #ccc;padding:15px;margin-bottom:15px;border-radius:8px;">
+                <h3>${index + 1}. ${app.candidateName}</h3>
+
+                <p><b>Email:</b> ${app.email}</p>
+
+                <p><b>Job:</b> ${app.jobId.title}</p>
+
+                <p><b>Company:</b> ${app.jobId.company}</p>
+
+                <p><b>Location:</b> ${app.jobId.location}</p>
+
+                <p><b>Status:</b> ${app.status}</p>
+<p><b>AI Match Score:</b> <span id="score-${app.email}">Loading...</span></p>
+
+                <button onclick="acceptCandidate('${app._id}')">
+                    Accept
+                </button>
+
+                <button onclick="rejectCandidate('${app._id}')">
+                    Reject
+                </button>
+<button onclick="viewResume('${app.email}')">
+    Resume
+</button>
+<button onclick="downloadResume('${app.email}')">
+    Download
+</button>
+
+            </div>
+            `;
+
+        });
+for (const app of applications) {
+
+    try {
+
+        const res = await fetch("/api/screening/" + encodeURIComponent(app.email));
+
+        if (!res.ok) {
+            document.getElementById("score-" + app.email).innerText = "N/A";
+            continue;
+        }
+
+        const data = await res.json();
+
+        document.getElementById("score-" + app.email).innerText =
+            data.matchScore + "%";
+
+    } catch (err) {
+
+        document.getElementById("score-" + app.email).innerText = "N/A";
+
+    }
+
+}
+
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+
+}
+async function acceptCandidate(id) {
+
+    try {
+
+        const res = await fetch("/api/applications/status/" + id, {
+
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                status: "Accepted"
+            })
+
+        });
+
+        const result = await res.json();
+
+        alert(result.message);
+
+        loadApplications();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+
+}
+
+async function rejectCandidate(id) {
+
+    try {
+
+        const res = await fetch("/api/applications/status/" + id, {
+
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                status: "Rejected"
+            })
+
+        });
+
+        const result = await res.json();
+
+        alert(result.message);
+
+        loadApplications();
+
+    } catch (err) {
+
+        alert(err.message);
+
+    }
+
+}
+async function viewResume(email) {
+
+    try {
+const res = await fetch("/api/resumes");
+
+
+        const resumes = await res.json();
+
+        const resume = resumes.find(r => r.email === email);
+
+        if (!resume) {
+            alert("Resume Not Found");
+            return;
+        }
+
+        window.open("/" + resume.filePath, "_blank");
+
+    } catch (err) {
+
+        alert("Error: " + err.message);
+
+    }
+
+}
+async function downloadResume(email) {
+
+    try {
+
+        const res = await fetch("/api/resumes");
+        const resumes = await res.json();
+
+        const resume = resumes.find(r => r.email === email);
+
+        if (!resume) {
+            alert("Resume Not Found");
+            return;
+        }
+
+        const link = document.createElement("a");
+        link.href = "/" + resume.filePath;
+        link.download = resume.fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+    } catch (err) {
+
+        alert("Error: " + err.message);
+
+    }
+
+}
+function filterCandidates() {
+
+    const search = document
+        .getElementById("searchBox")
+        .value
+        .toLowerCase();
+
+    const cards = document.querySelectorAll(".candidate-card");
+
+    cards.forEach(card => {
+
+        if (card.innerText.toLowerCase().includes(search)) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+}
+
+loadApplications();
+
+</script>
+
+</body>
+</html>
