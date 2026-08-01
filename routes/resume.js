@@ -14,6 +14,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post("/upload", upload.single("resume"), async (req, res) => {
+
+console.log("Upload request received");
+console.log(req.body);
+console.log(req.file);
     try {
         const { candidateName, email } = req.body;
 
