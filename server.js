@@ -9,8 +9,18 @@ const resumeRoutes = require("./routes/resume");
 const screeningRoutes = require("./routes/screening");
 console.log("Screening route file:", require.resolve("./routes/screening"));
 console.log("Job routes imported:", jobRoutes);
+
+const http = require("http");
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+const server = http.createServer(app);
+
+const { Server } = require("socket.io");
+const io = new Server(server, {
+    cors: {
+        origin: "*"
+    }
+});const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -43,6 +53,14 @@ app.get("/", (req, res) => {
     res.send("SmartHire AI Server Running...");
 });
 
-app.listen(PORT, () => {
+io.on("connection", (socket) => {
+    console.log("User Connected:", socket.id);
+
+    socket.on("disconnect", () => {
+        console.log("User Disconnected:", socket.id);
+    });
+});
+
+server.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
