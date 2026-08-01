@@ -72,8 +72,37 @@ async function applyJob(jobId) {
         alert("Error: " + err.message);
     }
 }
-
 loadJobs();
+loadLiveJobs();
+async function loadLiveJobs() {
+    try {
+        const res = await fetch("/api/livejobs");
+        const data = await res.json();
+
+        const jobsList = document.getElementById("jobsList");
+
+        jobsList.innerHTML += "<h2>🌍 Live Worldwide Jobs</h2>";
+
+        (data.data || []).slice(0, 20).forEach(job => {
+            jobsList.innerHTML += `
+                <div style="border:1px solid #ccc;padding:10px;margin:10px 0;border-radius:8px;">
+                    <h3>${job.title}</h3>
+
+                    <p><b>Company:</b> ${job.company_name}</p>
+
+                    <p><b>Location:</b> ${job.location || "Worldwide"}</p>
+
+                    <a href="${job.url}" target="_blank">
+                        <button>Apply Online</button>
+                    </a>
+                </div>
+            `;
+        });
+
+    } catch (err) {
+        console.log("Live Jobs Error:", err);
+    }
+}
 </script>
 
 </body>
