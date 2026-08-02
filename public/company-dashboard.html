@@ -11,6 +11,24 @@
 <div class="container">
 
     <h1>🏢 Company Dashboard</h1>
+<input type="text" id="searchInput" placeholder="Search Candidates">
+
+<button onclick="searchCandidate()">🔍 Search</button>
+
+<br><br>
+
+<script>
+function searchCandidate() {
+    const keyword = document.getElementById("searchInput").value.trim();
+
+    if (keyword === "") {
+        alert("Please enter a candidate name or email.");
+        return;
+    }
+
+    alert("Searching for: " + keyword);
+}
+</script>
     <p>Welcome to SmartHire AI</p>
 
     <button onclick="location.href='addjob.html'">
