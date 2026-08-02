@@ -54,4 +54,18 @@ router.put("/status/:id", async (req, res) => {
         });
     }
 });
+// Get applications by email
+router.get("/:email", async (req, res) => {
+    try {
+        const applications = await Application.find({
+            email: req.params.email
+        }).populate("jobId");
+
+        res.json(applications);
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
+    }
+});
 module.exports = router;
