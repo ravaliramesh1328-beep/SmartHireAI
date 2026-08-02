@@ -6,13 +6,15 @@ const router = express.Router();
 // Add Job
 router.post("/add", async (req, res) => {
     try {
-        const { title, company, location, description } = req.body;
+        const { title, company, location, description,vacancies } = req.body;
 
         const job = new Job({
             title,
             company,
             location,
-            description
+            description,
+            vacancies
+
         });
 
         await job.save();
