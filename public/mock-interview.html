@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Mock Interview</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h2>🤖 AI Mock Interview</h2>
+
+<p>Practice answering interview questions and improve your confidence.</p>
+
+<h3>Mock Interview Questions</h3>
+
+<p><b>1.</b> Tell me about yourself.</p>
+<textarea id="q1" rows="4" cols="50" placeholder="Type your answer..."></textarea>
+
+<p><b>2.</b> Why should we hire you?</p>
+<textarea id="q2" rows="4" cols="50" placeholder="Type your answer..."></textarea>
+
+<p><b>3.</b> What are your strengths?</p>
+<textarea id="q3" rows="4" cols="50" placeholder="Type your answer..."></textarea>
+
+<p><b>4.</b> Where do you see yourself in 5 years?</p>
+<textarea id="q4" rows="4" cols="50" placeholder="Type your answer..."></textarea>
+
+<br><br>
+
+<button onclick="submitInterview()">🤖 Submit Answers</button>
+
+<button onclick="location.href='interview-preparation.html'">
+⬅ Back
+</button>
+
+<div id="result" style="margin-top:20px;"></div>
+
+</div>
+
+<script>
+function submitInterview() {
+
+    const a1 = document.getElementById("q1").value;
+    const a2 = document.getElementById("q2").value;
+    const a3 = document.getElementById("q3").value;
+    const a4 = document.getElementById("q4").value;
+
+    let score = 0;
+
+    if(a1.length > 30) score += 25;
+    if(a2.length > 30) score += 25;
+    if(a3.length > 30) score += 25;
+    if(a4.length > 30) score += 25;
+
+    document.getElementById("result").innerHTML =
+        "<h3>✅ Interview Completed</h3>" +
+        "<h2>Score: " + score + "/100</h2>" +
+        "<p>Keep practicing to improve your interview performance.</p>";
+}
+</script>
+
+</body>
+</html>
