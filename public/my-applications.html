@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Applications</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>📋 My Applications</h2>
+
+    <div id="applicationsList">Loading...</div>
+
+    <br>
+
+    <button onclick="location.href='dashboard.html'">⬅ Back</button>
+</div>
+
+<script>
+async function loadApplications() {
+
+    const email = prompt("Enter your email");
+
+    if (!email) return;
+
+    const res = await fetch("/api/applications/" + email);
+    const data = await res.json();
+
+    let html = "";
+
+    if (data.length === 0) {
+        html = "<p>No Applications Found</p>";
+    } else {
+        data.forEach((app, index) => {
+            html += `
+                <h3>${index + 1}. ${app.jobId?.title || "Job"}</h3>
+                <p><b>Name:</b> ${app.candidateName}</p>
+                <p><b>Email:</b> ${app.email}</p>
+                <p><b>Status:</b> ${app.status || "Applied"}</p>
+                <hr>
+            `;
+        });
+    }
+
+    document.getElementById("applicationsList").innerHTML = html;
+}
+
+loadApplications();
+</script>
+
+</body>
+</html>
