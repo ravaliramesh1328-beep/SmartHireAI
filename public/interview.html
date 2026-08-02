@@ -21,9 +21,23 @@
     <video id="remoteVideo" autoplay playsinline></video>
 
     <br><br>
+<button onclick="startCamera()">🎥 Start Camera</button>
 
-    <button onclick="startCamera()">Start Camera</button>
-    <button onclick="endCall()">End Call</button>
+<button onclick="toggleMute()" id="muteBtn">🎤 Mute</button>
+
+<button onclick="toggleCamera()" id="cameraBtn">📷 Camera Off</button>
+
+<button onclick="shareScreen()">🖥️ Share Screen</button>
+
+<button onclick="openChat()">💬 Chat</button>
+
+<button onclick="showParticipants()">👥 Participants</button>
+
+<button onclick="startRecording()">🔴 Record</button>
+
+<button onclick="raiseHand()">✋ Raise Hand</button>
+
+<button onclick="endCall()">📞 End Call</button>
 </div>
 
 <script>
@@ -49,6 +63,45 @@ function endCall(){
     }
 
     document.getElementById("localVideo").srcObject=null;
+}
+function toggleMute(){
+    if(localStream){
+        const audioTrack = localStream.getAudioTracks()[0];
+        audioTrack.enabled = !audioTrack.enabled;
+
+        document.getElementById("muteBtn").innerText =
+            audioTrack.enabled ? "🎤 Mute" : "🔇 Unmute";
+    }
+}
+
+function toggleCamera(){
+    if(localStream){
+        const videoTrack = localStream.getVideoTracks()[0];
+        videoTrack.enabled = !videoTrack.enabled;
+
+        document.getElementById("cameraBtn").innerText =
+            videoTrack.enabled ? "📷 Camera Off" : "📷 Camera On";
+    }
+}
+
+function shareScreen(){
+    alert("Screen Share feature coming soon");
+}
+
+function openChat(){
+    alert("Chat feature coming soon");
+}
+
+function showParticipants(){
+    alert("Participants feature coming soon");
+}
+
+function startRecording(){
+    alert("Recording feature coming soon");
+}
+
+function raiseHand(){
+    alert("✋ Hand Raised");
 }
 </script>
 
