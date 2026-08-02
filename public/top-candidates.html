@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Top Candidates</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>🏆 Top Candidates</h2>
+
+    <div id="candidateList">Loading...</div>
+
+    <br>
+
+    <button onclick="location.href='company-dashboard.html'">
+        ⬅ Back
+    </button>
+</div>
+
+<script>
+async function loadCandidates(){
+    try{
+        const res = await fetch("/api/applications");
+        const data = await res.json();
+
+        let html = "";
+
+        data.filter(app => app.status === "Accepted")
+            .forEach((app,index)=>{
+                html += `
+                <h3>${index+1}. ${app.candidateName}</h3>
+                <p><b>Email:</b> ${app.email}</p>
+                <p><b>Job:</b> ${app.jobId?.title || ""}</p>
+                <hr>
+                `;
+            });
+
+        if(html===""){
+            html="<p>No Top Candidates Found</p>";
+        }
+
+        document.getElementById("candidateList").innerHTML=html;
+
+    }catch(err){
+        document.getElementById("candidateList").innerHTML=err.message;
+    }
+}
+
+loadCandidates();
+</script>
+
+</body>
+</html>
